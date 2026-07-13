@@ -1,28 +1,28 @@
 # Backend — GM Sound Manager
 
-Serveur gérant les sessions utilisateurs, la sélection des pistes audio selon les critères zone/ambiance, la synchronisation temps réel du playback et le stockage des fichiers importés.
+Server handling user sessions, audio track selection based on zone/ambiance criteria, real-time playback synchronization, and storage of imported files.
 
 ## Technologies
 
-| Outil | Rôle |
+| Tool | Role |
 |---|---|
 | [Node.js](https://nodejs.org) | Runtime |
-| [Fastify](https://fastify.dev) | Framework HTTP |
-| [TypeScript](https://www.typescriptlang.org) | Typage statique |
-| [Socket.io](https://socket.io) | Temps réel (sync playback, soundboard) |
-| [PostgreSQL](https://www.postgresql.org) | Persistance (sessions, bibliothèque audio) |
-| [MinIO](https://min.io) | Stockage des fichiers audio (compatible S3) |
-| [@fastify/multipart](https://github.com/fastify/fastify-multipart) | Upload de fichiers audio |
+| [Fastify](https://fastify.dev) | HTTP framework |
+| [TypeScript](https://www.typescriptlang.org) | Static typing |
+| [Socket.io](https://socket.io) | Real-time (playback sync, soundboard) |
+| [PostgreSQL](https://www.postgresql.org) | Persistence (sessions, audio library) |
+| [MinIO](https://min.io) | Audio file storage (S3-compatible) |
+| [@fastify/multipart](https://github.com/fastify/fastify-multipart) | Audio file uploads |
 
 ## Architecture
 
-Inspirée de la **Clean Architecture** avec quelques concepts **DDD** :
+Inspired by **Clean Architecture** with selected **DDD** concepts:
 
 ```
 src/
   domain/
-    session/        # Aggregate Session, Value Objects (Zone, Ambiance)
-    audio/          # Entity AudioTrack, Value Objects
+    session/        # Session Aggregate Root, Value Objects (Zone, Ambiance)
+    audio/          # AudioTrack Entity, Value Objects
     playback/       # PlaybackCommand, SoundboardEvent (Domain Events)
   application/
     session/        # CreateSessionUseCase, JoinSessionUseCase
@@ -33,18 +33,18 @@ src/
     storage/        # MinioStorageService
     realtime/       # SocketIOAdapter
   presentation/
-    http/routes/    # Routes Fastify (session, audio)
-    websocket/      # Handlers Socket.io (playback, soundboard)
+    http/routes/    # Fastify routes (session, audio)
+    websocket/      # Socket.io handlers (playback, soundboard)
   shared/
     errors/         # DomainError
     interfaces/     # ISessionRepository, IStorageService, IRealtimeGateway
 ```
 
-Les couches `domain` et `application` ne dépendent d'aucune lib externe. Socket.io et MinIO sont des détails d'infrastructure interchangeables.
+The `domain` and `application` layers have zero dependency on external libraries. Socket.io and MinIO are interchangeable infrastructure details.
 
-## Synchronisation audio
+## Audio Synchronization
 
-Le serveur est l'autorité temporelle. À chaque changement de piste, il broadcast une commande :
+The server is the time authority. On every track change, it broadcasts a command:
 
 ```json
 {
@@ -55,7 +55,7 @@ Le serveur est l'autorité temporelle. À chaque changement de piste, il broadca
 }
 ```
 
-Les clients compensent le décalage réseau et alignent la lecture via l'API Web Audio.
+Clients compensate for network latency and align playback via the Web Audio API.
 
 ## Installation
 
@@ -63,7 +63,7 @@ Les clients compensent le décalage réseau et alignent la lecture via l'API Web
 npm install
 ```
 
-## Développement
+## Development
 
 ```bash
 npm run dev
@@ -76,9 +76,9 @@ npm run build
 npm start
 ```
 
-## Variables d'environnement
+## Environment Variables
 
-Créer un fichier `.env` à la racine :
+Create a `.env` file at the root:
 
 ```env
 PORT=3000
@@ -88,11 +88,11 @@ DATABASE_URL=postgresql://user:password@localhost:5432/ambient
 MINIO_ENDPOINT=localhost
 MINIO_PORT=9000
 MINIO_ACCESS_KEY=admin
-MINIO_SECRET_KEY=motdepasse
+MINIO_SECRET_KEY=password
 MINIO_BUCKET=audio
 ```
 
-## Lancer MinIO localement
+## Running MinIO Locally
 
 ```bash
 docker run -d \
@@ -100,6 +100,6 @@ docker run -d \
   -p 9001:9001 \
   -v /data/minio:/data \
   -e MINIO_ROOT_USER=admin \
-  -e MINIO_ROOT_PASSWORD=motdepasse \
+  -e MINIO_ROOT_PASSWORD=password \
   minio/minio server /data --console-address ":9001"
 ```
