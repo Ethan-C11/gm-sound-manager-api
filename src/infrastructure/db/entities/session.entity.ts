@@ -8,8 +8,6 @@ export class Session {
     @ManyToOne(() => User, (user) => user.ownedSessions)
     owner: Relation<User>;
     @Column()
-    codeOfEvent: string;
-    @Column()
     event: string;
     @Column()
     inviteCode: string;
