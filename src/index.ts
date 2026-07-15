@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import 'dotenv/config'
 import Fastify from 'fastify'
 import {AppDataSource} from "./infrastructure/db/dataSource.js";
 

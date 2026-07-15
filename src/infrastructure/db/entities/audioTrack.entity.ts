@@ -4,7 +4,8 @@ import {
     Column,
     CreateDateColumn,
     ManyToOne,
-    JoinColumn
+    JoinColumn,
+    type Relation
 } from 'typeorm';
 import { User } from './user.entity.js';
 import {Zone} from "../../../shared/enums/Zone.js";
@@ -33,7 +34,7 @@ export class AudioTrack {
     ambiance: Ambiance | null;
     @ManyToOne(() => User, (user) => user.importedSounds, { nullable: true })
     @JoinColumn()
-    uploadedBy: User | null;
+    uploadedBy: Relation<User> | null;
     @Column({ default: false })
     isUserImported: boolean;
     @CreateDateColumn()

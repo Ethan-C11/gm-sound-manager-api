@@ -1,4 +1,4 @@
-import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToMany} from 'typeorm';
+import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToMany, type Relation} from 'typeorm';
 import {Session} from "./session.entity.js";
 import {AudioTrack} from "./audioTrack.entity.js";
 
@@ -15,10 +15,10 @@ export class User {
     @CreateDateColumn()
     createdAt: Date;
     @OneToMany(() => Session, (sessionEntity) => sessionEntity.owner)
-    ownedSessions: Session[];
+    ownedSessions: Relation<Session[]>;
     @ManyToMany(() => Session, (session) => session.sessionMembers)
-    joinedSessions: Session[];
+    joinedSessions: Relation<Session[]>;
 
     @OneToMany(() => AudioTrack, (audioTrack) => audioTrack.uploadedBy)
-    importedSounds: AudioTrack[];
+    importedSounds: Relation<AudioTrack[]>;
 }

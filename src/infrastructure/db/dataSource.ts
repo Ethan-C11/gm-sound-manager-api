@@ -5,4 +5,5 @@ export const AppDataSource = new DataSource({
     url: process.env.DATABASE_URL,
     entities: ['src/infrastructure/db/entities/*.ts'],
     migrations: ['src/infrastructure/db/migrations/*.ts'],
+    synchronize: true,
 })
