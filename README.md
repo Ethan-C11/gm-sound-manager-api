@@ -21,21 +21,20 @@ Inspired by **Clean Architecture** with selected **DDD** concepts:
 ```
 src/
   domain/
-    session/        # Session Aggregate Root, Value Objects (Zone, Ambiance)
-    audio/          # AudioTrack Entity, Value Objects
     playback/       # PlaybackCommand, SoundboardEvent (Domain Events)
   application/
     session/        # CreateSessionUseCase, JoinSessionUseCase
     audio/          # ResolveTracksUseCase, ImportAudioUseCase
     playback/       # TriggerPlaybackUseCase, TriggerSoundboardUseCase
   infrastructure/
-    db/             # SessionRepository, AudioTrackRepository
+    db/             # AppDataSource, entities, Session/AudioTrack/User repositories
     storage/        # GarageStorageService
     realtime/       # SocketIOAdapter
   presentation/
     http/routes/    # Fastify routes (session, audio)
     websocket/      # Socket.io handlers (playback, soundboard)
   shared/
+    enums/          # Zone, Ambiance, SoundType
     errors/         # DomainError
     interfaces/     # ISessionRepository, IStorageService, IRealtimeGateway
 ```

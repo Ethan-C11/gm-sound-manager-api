@@ -4,10 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch src/index.ts",
+    "dev": "node --watch --import @swc-node/register/esm-register src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",
@@ -17,13 +16,17 @@
     "@fastify/multipart": "^10.1.0",
     "@fastify/static": "^10.1.0",
     "@fastify/websocket": "^11.3.0",
+    "dotenv": "^17.4.2",
     "fastify": "^5.10.0",
-    "socket.io": "^4.8.3"
+    "pg": "^8.22.0",
+    "reflect-metadata": "^0.2.2",
+    "socket.io": "^4.8.3",
+    "typeorm": "^1.1.0"
   },
   "devDependencies": {
+    "@swc-node/register": "^1.11.1",
+    "@swc/core": "^1.15.43",
     "@types/node": "^26.1.1",
-    "nodemon": "^3.1.14",
-    "tsx": "^4.23.1",
-    "typescript": "^7.0.2"
+    "typescript": "^5.9.3"
   }
 }
