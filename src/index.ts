@@ -1,19 +1,18 @@
-// ESM
+import 'reflect-metadata'
 import Fastify from 'fastify'
+import {AppDataSource} from "./infrastructure/db/dataSource.js";
 
-const fastify = Fastify({
-    logger: true
-})
+const fastify = Fastify({ logger: true })
 
 fastify.get('/', async (request, reply) => {
     return { hello: 'world' }
 })
 
-/**
- * Run the server!
- */
 const start = async () => {
     try {
+        await AppDataSource.initialize()
+        fastify.log.info('Database connected')
+
         await fastify.listen({
             port: Number(process.env.PORT ?? 3001),
             host: process.env.HOST ?? '127.0.0.1'
@@ -23,4 +22,5 @@ const start = async () => {
         process.exit(1)
     }
 }
+
 start()
