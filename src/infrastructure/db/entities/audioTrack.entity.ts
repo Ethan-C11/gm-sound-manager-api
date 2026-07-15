@@ -15,10 +15,8 @@ import {SoundType} from "../../../shared/enums/SoundType.js";
 export class AudioTrack {
     @PrimaryGeneratedColumn()
     id: number;
-
     @Column()
     name: string;
-
     @Column()
     storageKey: string;
     @Column()
