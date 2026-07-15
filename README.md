@@ -108,6 +108,9 @@ Garage bootstrap below. The file is git-ignored.
 PORT=3000
 HOST=0.0.0.0
 
+GARAGE_RPC_SECRET=
+GARAGE_ADMIN_TOKEN=
+
 DATABASE_URL=postgresql://gm:gm_password@postgres:5432/gm_sound_manager
 
 S3_ENDPOINT=http://garage:3900
@@ -116,6 +119,10 @@ S3_BUCKET=audio
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
 ```
+
+`garage.toml` is committed and deliberately holds no secret. The RPC secret and
+the admin token are injected from `.env` into the Garage container; generate
+each with `openssl rand -hex 32`. Compose refuses to start if either is unset.
 
 `PORT` and `HOST` default to `3001` and `127.0.0.1` when unset. Inside a
 container the server must bind `0.0.0.0`, otherwise the published port is
