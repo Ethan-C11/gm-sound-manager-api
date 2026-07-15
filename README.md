@@ -21,8 +21,6 @@ Inspired by **Clean Architecture** with selected **DDD** concepts:
 ```
 src/
   domain/
-    session/        # Session Aggregate Root, Participant, SessionStatus
-    audio/          # AudioTrack Entity
     playback/       # PlaybackCommand, SoundboardEvent (Domain Events)
   application/
     session/        # CreateSessionUseCase, JoinSessionUseCase
