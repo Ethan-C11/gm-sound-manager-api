@@ -1,7 +1,7 @@
 import { Repository} from "typeorm";
-import {User} from "../../infrastructure/db/entities/user.entity.js";
-import {Session} from "../../infrastructure/db/entities/session.entity.js";
-import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
+import {User} from "../../../infrastructure/db/entities/user.entity.js";
+import {Session} from "../../../infrastructure/db/entities/session.entity.js";
+import {AppDataSource} from "../../../infrastructure/db/AppDataSource.js";
 import {DeleteSessionUseCase} from "./DeleteSessionUseCase.js";
 
 export class QuitSessionUseCase {
@@ -28,11 +28,14 @@ export class QuitSessionUseCase {
         if (!actor)
             throw Error("User does not exist");
 
-        const session: Session | null = await this._sessionRepository.findOneBy({ id: sessionId });
+        const session: Session | null = await this._sessionRepository.findOne({
+            where: { id: sessionId },
+            relations: { owner: true, sessionMembers: true },
+        });
         if (!session)
             throw Error("Session does not exist");
 
-        if(session.owner === actor) {
+        if(session.owner.id === actor.id) {
             if(forceDelete)
             {
                 const deleteSessionUseCase = DeleteSessionUseCase.getInstance();
@@ -42,7 +45,7 @@ export class QuitSessionUseCase {
                 throw Error("User cannot quit his own session unless forceDelete is activated");
         } else {
             const sessionMembersCopy = session.sessionMembers ?? [];
-            const indexOfMember = sessionMembersCopy.indexOf(actor);
+            const indexOfMember = sessionMembersCopy.findIndex(m => m.id === actor.id);
             sessionMembersCopy.splice(indexOfMember, 1);
             session.sessionMembers = sessionMembersCopy;
             return await this._sessionRepository.save(session);

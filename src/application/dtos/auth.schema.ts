@@ -21,7 +21,3 @@ export const AuthResponse = Type.Object({
         username: Type.String(),
     }),
 });
-
-export const ErrorResponse = Type.Object({
-    error: Type.String(),
-});

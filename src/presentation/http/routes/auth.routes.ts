@@ -1,8 +1,9 @@
     import type { FastifyInstance } from "fastify";
 import { JwtPayload } from "../../../shared/types/jwt-payload.js";
-import {SignUpUseCase} from "../../../application/auth/SignUpUseCase.js";
-import {SignInUseCase} from "../../../application/auth/SignInUseCase.js";
-    import {AuthResponse, ErrorResponse, SignInBody, SignUpBody} from "../../../application/dtos/auth.schema.js";
+import {SignUpUseCase} from "../../../application/useCases/auth/SignUpUseCase.js";
+import {SignInUseCase} from "../../../application/useCases/auth/SignInUseCase.js";
+    import {AuthResponse, SignInBody, SignUpBody} from "../../../application/dtos/auth.schema.js";
+    import {ErrorResponse} from "../../../application/dtos/shared.schema.js";
 
 export async function authRoutes(app: FastifyInstance) {
 

@@ -1,7 +1,7 @@
 import { Repository} from "typeorm";
-import {User} from "../../infrastructure/db/entities/user.entity.js";
-import {Session} from "../../infrastructure/db/entities/session.entity.js";
-import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
+import {User} from "../../../infrastructure/db/entities/user.entity.js";
+import {Session} from "../../../infrastructure/db/entities/session.entity.js";
+import {AppDataSource} from "../../../infrastructure/db/AppDataSource.js";
 
 export class DeleteSessionUseCase {
 
@@ -28,12 +28,15 @@ export class DeleteSessionUseCase {
     if (!actor)
       throw Error("User does not exist");
 
-    const session: Session | null = await this._sessionRepository.findOneBy({ id: sessionId });
+    const session: Session | null = await this._sessionRepository.findOne({
+      where: { id: sessionId },
+      relations: { owner: true },
+    });
     if (!session)
       throw Error("Session does not exist");
 
     if(!systemBypass) {
-      if(session.owner != actor)
+      if(session.owner.id !== actor.id)
         throw Error("User is not the owner of the session");
 
       return await this._sessionRepository.remove(session);
