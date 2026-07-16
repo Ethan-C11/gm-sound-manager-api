@@ -1,8 +1,9 @@
-import type { FastifyPluginAsyncTypebox } from "@fastify/type-provider-typebox";
-import { authenticate } from "../hooks/authenticate.js";
+import type {FastifyPluginAsyncTypebox} from "@fastify/type-provider-typebox";
+import {authenticate} from "../hooks/authenticate.js";
 import {
     CreateSessionBody,
-    JoinSessionBody, QuitSessionBody,
+    JoinSessionBody,
+    QuitSessionBody,
     SessionParams,
     SessionResponse
 } from "../../../application/dtos/session.schema.js";
@@ -12,12 +13,14 @@ import {ErrorResponse} from "../../../application/dtos/shared.schema.js";
 import {DeleteSessionUseCase} from "../../../application/useCases/session/DeleteSessionUseCase.js";
 import {JoinSessionUseCase} from "../../../application/useCases/session/JoinSessionUseCase.js";
 import {QuitSessionUseCase} from "../../../application/useCases/session/QuitSessionUseCase.js";
+import {authorize} from "../hooks/authorize.js";
+import {Role} from "../../../shared/enums/Role.js";
 
 
 export const sessionRoutes: FastifyPluginAsyncTypebox = async (app) => {
 
     app.post("/", {
-        preHandler: [authenticate],
+        preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
         schema: {
             tags: ["Sessions"],
             summary: "Créer une session",
@@ -36,7 +39,7 @@ export const sessionRoutes: FastifyPluginAsyncTypebox = async (app) => {
     });
 
     app.delete("/:id", {
-        preHandler: [authenticate],
+        preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
         schema: {
             tags: ["Sessions"],
             summary: "Supprimer une session (owner uniquement)",
