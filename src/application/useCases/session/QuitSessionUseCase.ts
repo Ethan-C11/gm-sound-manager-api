@@ -46,6 +46,8 @@ export class QuitSessionUseCase {
         } else {
             const sessionMembersCopy = session.sessionMembers ?? [];
             const indexOfMember = sessionMembersCopy.findIndex(m => m.id === actor.id);
+            if (indexOfMember === -1)
+                throw Error("User is not a member of this session");
             sessionMembersCopy.splice(indexOfMember, 1);
             session.sessionMembers = sessionMembersCopy;
             return await this._sessionRepository.save(session);
