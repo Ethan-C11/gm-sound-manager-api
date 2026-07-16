@@ -6,12 +6,14 @@ import {registerJwt} from "./presentation/http/plugins/jwt.plugin.js";
 import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
 import {registerDocs} from "./presentation/http/plugins/docs.plugin.js";
 import {authRoutes} from "./presentation/http/routes/auth.routes.js";
+import {sessionRoutes} from "./presentation/http/routes/session.routes.js";
 
 const fastify = Fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
 await registerJwt(fastify);
 await registerDocs(fastify);
 
 await fastify.register(authRoutes, { prefix: "/auth" });
+await fastify.register(sessionRoutes, { prefix: "/session" });
 
 const start = async () => {
     try {
