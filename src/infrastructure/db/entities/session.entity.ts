@@ -8,14 +8,12 @@ export class Session {
     @ManyToOne(() => User, (user) => user.ownedSessions)
     owner: Relation<User>;
     @Column()
-    codeOfEvent: string;
-    @Column()
-    event: string;
+    sessionName: string;
     @Column()
     inviteCode: string;
     @CreateDateColumn()
     createdAt: Date;
     @ManyToMany(() => User, (user) => user.joinedSessions)
     @JoinTable()
-    sessionMembers: Relation<User[]>;
+    sessionMembers: Relation<User[]> = [];
 }
