@@ -10,6 +10,7 @@ export enum Zone {
     TUNDRA = 'tundra',
     COAST = 'coast',
     OCEAN = 'ocean',
+    TEMPEST_OCEAN = 'tempest_ocean',
 
     // Souterrain
     CAVE = 'cave',
