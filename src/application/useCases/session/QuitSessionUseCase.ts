@@ -1,7 +1,7 @@
 import { Repository} from "typeorm";
-import {User} from "../../infrastructure/db/entities/user.entity.js";
-import {Session} from "../../infrastructure/db/entities/session.entity.js";
-import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
+import {User} from "../../../infrastructure/db/entities/user.entity.js";
+import {Session} from "../../../infrastructure/db/entities/session.entity.js";
+import {AppDataSource} from "../../../infrastructure/db/AppDataSource.js";
 import {DeleteSessionUseCase} from "./DeleteSessionUseCase.js";
 
 export class QuitSessionUseCase {
