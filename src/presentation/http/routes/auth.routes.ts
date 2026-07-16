@@ -2,10 +2,21 @@
 import { JwtPayload } from "../../../shared/types/jwt-payload.js";
 import {SignUpUseCase} from "../../../application/auth/SignUpUseCase.js";
 import {SignInUseCase} from "../../../application/auth/SignInUseCase.js";
+    import {AuthResponse, ErrorResponse, SignInBody, SignUpBody} from "../../../application/dtos/auth.schema.js";
 
 export async function authRoutes(app: FastifyInstance) {
 
-    app.post("/signup", async (request, reply) => {
+    app.post("/signup", {
+        schema: {
+            tags: ["Auth"],
+            summary: "Create an user account",
+            body: SignUpBody,
+            response: {
+                201: AuthResponse,
+                400: ErrorResponse,
+            },
+        },
+    }, async (request, reply) => {
         const { email, username, password } = request.body as {
             email: string; username: string; password: string;
         };
@@ -22,7 +33,17 @@ export async function authRoutes(app: FastifyInstance) {
         }
     });
 
-    app.post("/signin", async (request, reply) => {
+    app.post("/signin", {
+        schema: {
+            tags: ["Auth"],
+            summary: "Connect to an user account",
+            body: SignInBody,
+            response: {
+                200: AuthResponse,
+                401: ErrorResponse,
+            },
+        },
+    }, async (request, reply) => {
         const { email, password } = request.body as { email: string; password: string };
 
         try {
