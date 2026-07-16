@@ -10,7 +10,7 @@ services:
       HOST: ${HOST}
       CHOKIDAR_USEPOLLING: "true"
       CHOKIDAR_INTERVAL: "500"
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gm-postgres:5432/${POSTGRES_DB}
       S3_ENDPOINT: http://garage:3900
       S3_REGION: garage
       S3_BUCKET: ${S3_BUCKET:-audio}
