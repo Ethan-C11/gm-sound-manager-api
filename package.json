@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node --watch --import @swc-node/register/esm-register src/index.ts",
+    "dev": "node --watch --env-file=.env --import @swc-node/register/esm-register src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
