@@ -33,6 +33,6 @@ export class SignUpUseCase {
             role : Role.USER
         })
 
-        return newUser;
+        return this._userRepository.save(newUser);
     }
 }
