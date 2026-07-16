@@ -27,9 +27,9 @@ export class DeleteSessionUseCase {
       if(session.owner != actor)
         throw Error("User is not the owner of the session");
 
-      return await this._sessionRepository.delete({ id: sessionId });
+      return await this._sessionRepository.remove(session);
     } else
-      return await this._sessionRepository.delete({ id: sessionId });
+      return await this._sessionRepository.remove(session);
 
   }
 }
