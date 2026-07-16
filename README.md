@@ -81,6 +81,7 @@ Garage bootstrap below. The file is git-ignored.
 PORT=3000
 HOST=0.0.0.0
 
+# Generate each with: openssl rand -hex 32
 GARAGE_RPC_SECRET=
 GARAGE_ADMIN_TOKEN=
 
@@ -91,6 +92,13 @@ S3_REGION=garage
 S3_BUCKET=audio
 S3_ACCESS_KEY=
 S3_SECRET_KEY=
+
+
+POSTGRES_USER=
+POSTGRES_PASSWORD=
+POSTGRES_DB=
+
+JWT_SECRET=
 ```
 
 `garage.toml` is committed and deliberately holds no secret. The RPC secret and
