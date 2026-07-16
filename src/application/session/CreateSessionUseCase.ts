@@ -6,12 +6,21 @@ import {generateRandomString} from "../../shared/utils/GenerateRandomString.js";
 
 export class CreateSessionUseCase {
 
-  _userRepository : Repository<User>;
-  _sessionRepository : Repository<Session>;
+  private static _instance: CreateSessionUseCase;
 
-  constructor() {
+  private _userRepository: Repository<User>;
+  private _sessionRepository: Repository<Session>;
+
+  private constructor() {
     this._userRepository = AppDataSource.getRepository(User);
     this._sessionRepository = AppDataSource.getRepository(Session);
+  }
+
+  static getInstance(): CreateSessionUseCase {
+    if (!CreateSessionUseCase._instance) {
+      CreateSessionUseCase._instance = new CreateSessionUseCase();
+    }
+    return CreateSessionUseCase._instance;
   }
 
   async execute(ownerId: number, sessionName: string): Promise<Session> {

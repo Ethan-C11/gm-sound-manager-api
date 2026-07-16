@@ -5,12 +5,21 @@ import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
 
 export class JoinSessionUseCase {
 
+  private static _instance: JoinSessionUseCase;
+
   _userRepository : Repository<User>;
   _sessionRepository : Repository<Session>;
 
   constructor() {
     this._userRepository = AppDataSource.getRepository(User);
     this._sessionRepository = AppDataSource.getRepository(Session);
+  }
+
+  static getInstance(): JoinSessionUseCase {
+    if (!JoinSessionUseCase._instance) {
+      JoinSessionUseCase._instance = new JoinSessionUseCase();
+    }
+    return JoinSessionUseCase._instance;
   }
 
   async execute(inviteCode: string, userId: number): Promise<Session> {

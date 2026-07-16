@@ -6,11 +6,20 @@ import {DeleteSessionUseCase} from "./DeleteSessionUseCase.js";
 
 export class QuitSessionUseCase {
 
+    private static _instance: QuitSessionUseCase;
+
     _userRepository : Repository<User>;
     _sessionRepository : Repository<Session>;
     constructor() {
         this._userRepository = AppDataSource.getRepository(User);
         this._sessionRepository = AppDataSource.getRepository(Session);
+    }
+
+    static getInstance(): QuitSessionUseCase {
+        if (!QuitSessionUseCase._instance) {
+            QuitSessionUseCase._instance = new QuitSessionUseCase();
+        }
+        return QuitSessionUseCase._instance;
     }
 
     async execute(sessionId: number, actorId: number, forceDelete : boolean = false): Promise<Session> {
