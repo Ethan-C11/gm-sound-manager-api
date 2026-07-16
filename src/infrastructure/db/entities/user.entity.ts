@@ -1,6 +1,7 @@
 import {Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany, ManyToMany, type Relation} from 'typeorm';
 import {Session} from "./session.entity.js";
 import {AudioTrack} from "./audioTrack.entity.js";
+import {Role} from "../../../shared/enums/Role.js";
 
 @Entity()
 export class User {
@@ -18,7 +19,8 @@ export class User {
     ownedSessions: Relation<Session[]> = [];
     @ManyToMany(() => Session, (session) => session.sessionMembers)
     joinedSessions: Relation<Session[]> = [];
-
     @OneToMany(() => AudioTrack, (audioTrack) => audioTrack.uploadedBy)
     importedSounds: Relation<AudioTrack[]> = [];
+    @Column()
+    role: Role;
 }
