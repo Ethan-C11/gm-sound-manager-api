@@ -1,4 +1,4 @@
-import {DeleteResult, Repository} from "typeorm";
+import { Repository} from "typeorm";
 import {User} from "../../infrastructure/db/entities/user.entity.js";
 import {Session} from "../../infrastructure/db/entities/session.entity.js";
 import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
@@ -13,7 +13,7 @@ export class DeleteSessionUseCase {
     this._sessionRepository = AppDataSource.getRepository(Session);
   }
 
-  async execute(sessionId: number, actorId: number, systemBypass : boolean = false): Promise<DeleteResult> {
+  async execute(sessionId: number, actorId: number, systemBypass : boolean = false): Promise<Session> {
 
     const actor: User | null = await this._userRepository.findOneBy({ id: actorId });
     if (!actor)
