@@ -27,10 +27,19 @@ export class CreateSessionUseCase {
     if(ownerAlreadyHasASession)
       throw Error("Owner already has a open session");
 
+    let inviteCode : string = generateRandomString(6);
+    let isInviteCodeAlreadyUsed: Session | null = await this._sessionRepository.findOneBy({ inviteCode: inviteCode });
+
+    while(!isInviteCodeAlreadyUsed) //just in case i'm unlucky enough to have an already used code
+    {
+      inviteCode = generateRandomString(6);
+      isInviteCodeAlreadyUsed = await this._sessionRepository.findOneBy({ inviteCode: inviteCode });
+    }
+
     const session = this._sessionRepository.create({
       owner: owner,
       sessionName: sessionName,
-      inviteCode : generateRandomString(6),
+      inviteCode : inviteCode,
       sessionMembers : [owner] //owner is a member of their own session to allow me to only iterate on the members and not the owner too
     })
 
