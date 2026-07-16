@@ -2,8 +2,10 @@ import 'reflect-metadata'
 import 'dotenv/config'
 import Fastify from 'fastify'
 import {AppDataSource} from "./infrastructure/db/AppDataSource.js";
+import {registerJwt} from "./presentation/http/plugins/jwt.plugin.js";
 
 const fastify = Fastify({ logger: true })
+await registerJwt(fastify);
 
 fastify.get('/', async (request, reply) => {
     return { hello: 'world' }
