@@ -36,6 +36,10 @@ export class JoinSessionUseCase {
       throw Error("User not found");
 
     const newMemberList = existingSession.sessionMembers ?? [];
+
+    if (existingSession.sessionMembers?.some(m => m.id === user.id))
+      throw Error("User is already a member of this session");
+
     newMemberList.push(user);
 
     existingSession.sessionMembers = newMemberList;
