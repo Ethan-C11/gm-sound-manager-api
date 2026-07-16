@@ -1,49 +1,48 @@
 services:
-  api:
+  gm-api:
     build:
       context: .
       target: dev
     ports:
       - "3000:3000"
     environment:
-      PORT: 3000
-      HOST: 0.0.0.0
-      # Windows/macOS bind mounts do not forward inotify events into the
-      # container, so tsx's watcher must poll to see host-side edits.
+      PORT: ${PORT}
+      HOST: ${HOST}
       CHOKIDAR_USEPOLLING: "true"
       CHOKIDAR_INTERVAL: "500"
-      DATABASE_URL: postgresql://gm:gm_password@postgres:5432/gm_sound_manager
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gm-postgres:5432/${POSTGRES_DB}
       S3_ENDPOINT: http://garage:3900
       S3_REGION: garage
       S3_BUCKET: ${S3_BUCKET:-audio}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
+      JWT_SECRET: ${JWT_SECRET}
     volumes:
       - .:/app
       - /app/node_modules
     depends_on:
-      postgres:
+      gm-postgres:
         condition: service_healthy
-      garage:
+      gm-garage:
         condition: service_healthy
 
-  postgres:
+  gm-postgres:
     image: postgres:17-alpine
     ports:
       - "5432:5432"
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-}
-      POSTGRES_DB: ${POSTGRES_DB:-}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - gm_postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U gm -d gm_sound_manager"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 5s
       retries: 10
 
-  garage:
+  gm-garage:
     image: dxflrs/garage:v1.0.1
     ports:
       - "3900:3900"
@@ -54,8 +53,8 @@ services:
       GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:?set GARAGE_ADMIN_TOKEN in .env}
     volumes:
       - ./garage.toml:/etc/garage.toml:ro
-      - garage_meta:/var/lib/garage/meta
-      - garage_data:/var/lib/garage/data
+      - gm_garage_meta:/var/lib/garage/meta
+      - gm_garage_data:/var/lib/garage/data
     healthcheck:
       test: ["CMD", "/garage", "status"]
       interval: 5s
@@ -63,6 +62,6 @@ services:
       retries: 10
 
 volumes:
-  postgres_data:
-  garage_meta:
-  garage_data:
+  gm_postgres_data:
+  gm_garage_meta:
+  gm_garage_data:

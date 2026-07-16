@@ -30,7 +30,7 @@ export class CreateSessionUseCase {
       throw Error("User does not exist");
 
     const ownerAlreadyHasASession : boolean = await this._sessionRepository.exists({
-      where: { owner: owner }
+      where: { owner: { id: owner.id } }
     })
 
     if(ownerAlreadyHasASession)
@@ -39,7 +39,7 @@ export class CreateSessionUseCase {
     let inviteCode : string = generateRandomString(6);
     let isInviteCodeAlreadyUsed: Session | null = await this._sessionRepository.findOneBy({ inviteCode: inviteCode });
 
-    while(!isInviteCodeAlreadyUsed) //just in case i'm unlucky enough to have an already used code
+    while(isInviteCodeAlreadyUsed) //just in case i'm unlucky enough to have an already used code
     {
       inviteCode = generateRandomString(6);
       isInviteCodeAlreadyUsed = await this._sessionRepository.findOneBy({ inviteCode: inviteCode });

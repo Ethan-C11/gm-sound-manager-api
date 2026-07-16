@@ -25,7 +25,7 @@ export class JoinSessionUseCase {
   async execute(inviteCode: string, userId: number): Promise<Session> {
     let existingSession : Session | null = await this._sessionRepository.findOne({
       where: { inviteCode },
-      relations: { sessionMembers: true },
+      relations: { owner: true, sessionMembers: true },
     });
 
     if (!existingSession)
@@ -36,6 +36,10 @@ export class JoinSessionUseCase {
       throw Error("User not found");
 
     const newMemberList = existingSession.sessionMembers ?? [];
+
+    if (existingSession.sessionMembers?.some(m => m.id === user.id))
+      throw Error("User is already a member of this session");
+
     newMemberList.push(user);
 
     existingSession.sessionMembers = newMemberList;
