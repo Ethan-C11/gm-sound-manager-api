@@ -30,7 +30,7 @@ export class DeleteSessionUseCase {
 
     const session: Session | null = await this._sessionRepository.findOne({
       where: { id: sessionId },
-      relations: { owner: true },
+      relations: { owner: true, sessionMembers: true },
     });
     if (!session)
       throw Error("Session does not exist");
@@ -38,7 +38,8 @@ export class DeleteSessionUseCase {
     if (!systemBypass && session.owner.id !== actor.id)
       throw Error("User is not the owner of the session");
 
-    return await this._sessionRepository.remove(session);
-
+    const sessionSnapshot = { ...session } as Session;
+    await this._sessionRepository.remove(session);
+    return sessionSnapshot;
   }
 }

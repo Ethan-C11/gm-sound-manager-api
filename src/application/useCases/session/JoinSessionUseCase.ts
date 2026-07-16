@@ -25,7 +25,7 @@ export class JoinSessionUseCase {
   async execute(inviteCode: string, userId: number): Promise<Session> {
     let existingSession : Session | null = await this._sessionRepository.findOne({
       where: { inviteCode },
-      relations: { sessionMembers: true },
+      relations: { owner: true, sessionMembers: true },
     });
 
     if (!existingSession)
