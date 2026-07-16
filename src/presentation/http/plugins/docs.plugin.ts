@@ -22,6 +22,6 @@ export async function registerDocs(app: FastifyInstance) {
     });
 
     await app.register(ScalarApiReference, {
-        routePrefix: "/reference",
+        routePrefix: "/docs",
     });
 }
