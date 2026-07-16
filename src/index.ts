@@ -2,12 +2,16 @@ import 'reflect-metadata'
 import 'dotenv/config'
 import Fastify from 'fastify'
 import {AppDataSource} from "./infrastructure/db/AppDataSource.js";
+import {registerJwt} from "./presentation/http/plugins/jwt.plugin.js";
+import { TypeBoxTypeProvider } from "@fastify/type-provider-typebox";
+import {registerDocs} from "./presentation/http/plugins/docs.plugin.js";
+import {authRoutes} from "./presentation/http/routes/auth.routes.js";
 
-const fastify = Fastify({ logger: true })
+const fastify = Fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
+await registerJwt(fastify);
+await registerDocs(fastify);
 
-fastify.get('/', async (request, reply) => {
-    return { hello: 'world' }
-})
+await fastify.register(authRoutes, { prefix: "/auth" });
 
 const start = async () => {
     try {

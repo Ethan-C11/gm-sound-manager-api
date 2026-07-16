@@ -15,5 +15,5 @@ export class Session {
     createdAt: Date;
     @ManyToMany(() => User, (user) => user.joinedSessions)
     @JoinTable()
-    sessionMembers: Relation<User[]> = [];
+    sessionMembers: Relation<User[]>;
 }
