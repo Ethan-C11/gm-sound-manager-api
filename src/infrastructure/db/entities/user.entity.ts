@@ -16,11 +16,15 @@ export class User {
     @CreateDateColumn()
     createdAt: Date;
     @OneToMany(() => Session, (sessionEntity) => sessionEntity.owner)
-    ownedSessions: Relation<Session[]> = [];
+    ownedSessions: Relation<Session[]>;
     @ManyToMany(() => Session, (session) => session.sessionMembers)
-    joinedSessions: Relation<Session[]> = [];
+    joinedSessions: Relation<Session[]>;
     @OneToMany(() => AudioTrack, (audioTrack) => audioTrack.uploadedBy)
-    importedSounds: Relation<AudioTrack[]> = [];
-    @Column()
+    importedSounds: Relation<AudioTrack[]>;
+    @Column({
+        type: "enum",
+        enum: Role,
+        default: Role.USER,
+    })
     role: Role;
 }
