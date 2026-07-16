@@ -14,32 +14,6 @@ Server handling user sessions, audio track selection based on zone/ambiance crit
 | [Garage](https://garagehq.deuxfleurs.fr/)                               | Audio file storage (S3-compatible) |
 | [@fastify/multipart](https://github.com/fastify/fastify-multipart) | Audio file uploads |
 
-## Architecture
-
-Inspired by **Clean Architecture** with selected **DDD** concepts:
-
-```
-src/
-  domain/
-    playback/       # PlaybackCommand, SoundboardEvent (Domain Events)
-  application/
-    session/        # CreateSessionUseCase, JoinSessionUseCase
-    audio/          # ResolveTracksUseCase, ImportAudioUseCase
-    playback/       # TriggerPlaybackUseCase, TriggerSoundboardUseCase
-  infrastructure/
-    db/             # AppDataSource, entities, Session/AudioTrack/User repositories
-    storage/        # GarageStorageService
-    realtime/       # SocketIOAdapter
-  presentation/
-    http/routes/    # Fastify routes (session, audio)
-    websocket/      # Socket.io handlers (playback, soundboard)
-  shared/
-    enums/          # Zone, Ambiance, SoundType
-    errors/         # DomainError
-    interfaces/     # ISessionRepository, IStorageService, IRealtimeGateway
-```
-
-The `domain` and `application` layers have zero dependency on external libraries. Socket.io and Garage are interchangeable infrastructure details.
 
 ## Audio Synchronization
 
