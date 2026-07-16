@@ -35,7 +35,7 @@ export class JoinSessionUseCase {
     if (!user)
       throw Error("User not found");
 
-    const newMemberList = existingSession.sessionMembers;
+    const newMemberList = existingSession.sessionMembers ?? [];
     newMemberList.push(user);
 
     existingSession.sessionMembers = newMemberList;

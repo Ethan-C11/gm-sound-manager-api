@@ -41,7 +41,7 @@ export class QuitSessionUseCase {
             else
                 throw Error("User cannot quit his own session unless forceDelete is activated");
         } else {
-            const sessionMembersCopy = session.sessionMembers;
+            const sessionMembersCopy = session.sessionMembers ?? [];
             const indexOfMember = sessionMembersCopy.indexOf(actor);
             sessionMembersCopy.splice(indexOfMember, 1);
             session.sessionMembers = sessionMembersCopy;
