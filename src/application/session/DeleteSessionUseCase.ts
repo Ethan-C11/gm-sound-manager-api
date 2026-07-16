@@ -5,12 +5,21 @@ import {AppDataSource} from "../../infrastructure/db/AppDataSource.js";
 
 export class DeleteSessionUseCase {
 
+  private static _instance: DeleteSessionUseCase;
+
   _userRepository : Repository<User>;
   _sessionRepository : Repository<Session>;
 
   constructor() {
     this._userRepository = AppDataSource.getRepository(User);
     this._sessionRepository = AppDataSource.getRepository(Session);
+  }
+
+  static getInstance(): DeleteSessionUseCase {
+    if (!DeleteSessionUseCase._instance) {
+      DeleteSessionUseCase._instance = new DeleteSessionUseCase();
+    }
+    return DeleteSessionUseCase._instance;
   }
 
   async execute(sessionId: number, actorId: number, systemBypass : boolean = false): Promise<Session> {
