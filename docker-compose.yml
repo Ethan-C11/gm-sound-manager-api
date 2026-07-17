@@ -12,8 +12,8 @@ services:
       CHOKIDAR_USEPOLLING: "true"
       CHOKIDAR_INTERVAL: "500"
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@gm-postgres:5432/${POSTGRES_DB}
-      S3_ENDPOINT: http://garage:3900
-      S3_REGION: garage
+      S3_ENDPOINT: http://minio:9000
+      S3_REGION: us-east-1
       S3_BUCKET: ${S3_BUCKET:-audio}
       S3_ACCESS_KEY: ${S3_ACCESS_KEY:-}
       S3_SECRET_KEY: ${S3_SECRET_KEY:-}
@@ -24,8 +24,8 @@ services:
     depends_on:
       gm-postgres:
         condition: service_healthy
-      gm-garage:
-        condition: service_started
+      gm-minio:
+        condition: service_healthy
 
   gm-postgres:
     container_name: gm-postgres
@@ -44,27 +44,24 @@ services:
       timeout: 5s
       retries: 10
 
-  gm-garage:
-    container_name: gm-garage
-    image: dxflrs/garage:v1.0.1
+  gm-minio:
+    container_name: gm-minio
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
     ports:
-      - "3900:3900"
-      - "3902:3902"
-      - "3903:3903"
+      - "9000:9000"
+      - "9001:9001"
     environment:
-      GARAGE_RPC_SECRET: ${GARAGE_RPC_SECRET:?set GARAGE_RPC_SECRET in .env.docker}
-      GARAGE_ADMIN_TOKEN: ${GARAGE_ADMIN_TOKEN:?set GARAGE_ADMIN_TOKEN in .env.docker}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:?set MINIO_ROOT_USER in .env}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:?set MINIO_ROOT_PASSWORD in .env}
     volumes:
-      - ./garage.toml:/etc/garage.toml:ro
-      - gm_garage_meta:/var/lib/garage/meta
-      - gm_garage_data:/var/lib/garage/data
+      - gm_minio_data:/data
     healthcheck:
-      test: ["CMD", "/garage", "status"]
+      test: ["CMD", "mc", "ready", "local"]
       interval: 5s
       timeout: 5s
       retries: 10
 
 volumes:
   gm_postgres_data:
-  gm_garage_meta:
-  gm_garage_data:
+  gm_minio_data:
