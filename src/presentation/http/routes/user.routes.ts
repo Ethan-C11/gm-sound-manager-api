@@ -13,7 +13,7 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (app) => {
         preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
         schema: {
             tags: ["User"],
-            summary: "Edit an user account",
+            summary: "Edit the user account",
             security: [{ bearerAuth: [] }],
             body: EditUserBody,
             response: {
@@ -38,7 +38,7 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (app) => {
         preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
         schema: {
             tags: ["User"],
-            summary: "Delete an user account",
+            summary: "Delete the user account",
             security: [{ bearerAuth: [] }],
             response: {
                 200: UserResponse,
@@ -60,7 +60,7 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (app) => {
         preHandler: [authenticate, authorize(Role.ADMIN)],
         schema: {
             tags: ["User"],
-            summary: "Delete an user account",
+            summary: "(ADMIN) Delete an user account",
             security: [{ bearerAuth: [] }],
             params: UserDeleteParams,
             response: {
