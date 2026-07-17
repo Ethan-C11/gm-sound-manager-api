@@ -6,16 +6,19 @@ import {Zone} from "../../../shared/enums/Zone.js";
 import {Ambiance} from "../../../shared/enums/Ambiance.js";
 import {MinioStorageService} from "../../../infrastructure/storage/MinioStorageService.js";
 import {MultipartFile} from "@fastify/multipart";
-import {SoundTrackResponse} from "../../dtos/soundTrack.schema.js";
+import {AudioTrackResponse} from "../../dtos/soundTrack.schema.js";
+import {User} from "../../../infrastructure/db/entities/user.entity.js";
 
 class ImportAudioUseCase {
 
     private static _instance: ImportAudioUseCase;
 
     private _audioTrackRepository: Repository<AudioTrack>;
+    private _userRepository: Repository<User>;
 
     private constructor() {
         this._audioTrackRepository = AppDataSource.getRepository(AudioTrack);
+        this._userRepository = AppDataSource.getRepository(User);
     }
 
     static getInstance(): ImportAudioUseCase {
@@ -25,27 +28,50 @@ class ImportAudioUseCase {
         return ImportAudioUseCase._instance;
     }
 
-    async execute(file : MultipartFile | undefined, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined, isUserImported : boolean): Promise<SoundTrackResponse> {
+    async execute(userId: number = 0, file : MultipartFile | undefined, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined, isUserImported : boolean): Promise<AudioTrackResponse> {
         if (!file)
             throw Error("No file selected" );
+
 
         if(!ambiance && !zone)
             throw Error("You need to select at least one zone or ambiance" );
 
-        let userId = 0;
-        const key = `sounds/${type}/${userId}/${file.filename}`;
+        if(!isUserImported)
+            userId = 0
 
+        const key = `sounds/${type}/${userId}/${file.filename}`;
         const buffer = await file.toBuffer();
 
         await MinioStorageService.getInstance().upload(key, buffer, buffer.length, file.mimetype);
 
-         const res : SoundTrackResponse = {
+        let uploader: User | null = null;
+        if (isUserImported && userId) {
+            uploader = await this._userRepository.findOneBy({ id: userId });
+            if (!uploader)
+                throw Error("User does not exist");
+        }
+
+        const audioTrack = this._audioTrackRepository.create({
+            name: name,
+            storageKey: key,
+            mimeType: file.mimetype,
+            sizeInBytes: buffer.length,
+            type: type,
+            zone: zone ?? null,
+            ambiance: ambiance ?? null,
+            uploadedBy: uploader,
+            isUserImported: isUserImported,
+        });
+
+        await this._audioTrackRepository.save(audioTrack);
+
+         const res : AudioTrackResponse = {
              soundTrack: {
                  key: key,
                  name: name,
                  type: type,
                  zone: zone,
-                 ambiance: zone,
+                 ambiance: ambiance,
                  isUserImported: isUserImported,
              }
         }
