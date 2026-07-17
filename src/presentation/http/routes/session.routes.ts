@@ -76,7 +76,7 @@ export const sessionRoutes: FastifyPluginAsyncTypebox = async (app) => {
         }
     });
 
-    app.post("/:id/quit", {
+    app.post("/quit/:id", {
         preHandler: [authenticate],
         schema: {
             tags: ["Sessions"],
