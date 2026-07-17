@@ -2,7 +2,7 @@ import { Type, Static } from "@fastify/type-provider-typebox";
 
 
 export const SoundTrackBody = Type.Object({
-    file: typeof File,
+    file: Type.Any(),
     name: Type.String(),
     type: Type.String(),
     zone: Type.Optional(Type.String()),
