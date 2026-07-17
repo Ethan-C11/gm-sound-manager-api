@@ -1,5 +1,6 @@
 services:
   gm-api:
+    container_name: gm-api
     build:
       context: .
       target: dev
@@ -27,6 +28,7 @@ services:
         condition: service_started
 
   gm-postgres:
+    container_name: gm-postgres
     image: postgres:17-alpine
     ports:
       - "5432:5432"
@@ -43,6 +45,7 @@ services:
       retries: 10
 
   gm-garage:
+    container_name: gm-garage
     image: dxflrs/garage:v1.0.1
     ports:
       - "3900:3900"

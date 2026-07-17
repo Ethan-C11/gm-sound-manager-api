@@ -140,12 +140,12 @@ cluster serves no S3 traffic until a layout is applied and a key is issued. Run
 this once, after the first `docker compose up`:
 
 ```bash
-docker compose exec garage /garage status   # note the node id
-docker compose exec garage /garage layout assign -z dc1 -c 1G <node_id>
-docker compose exec garage /garage layout apply --version 1
-docker compose exec garage /garage bucket create audio
-docker compose exec garage /garage key create gm-api-key
-docker compose exec garage /garage bucket allow --read --write --owner audio --key gm-api-key
+docker compose exec gm-garage /garage status   # note the node id
+docker compose exec gm-garage /garage layout assign -z dc1 -c 1G <node_id>
+docker compose exec gm-garage /garage layout apply --version 1
+docker compose exec gm-garage /garage bucket create audio
+docker compose exec gm-garage /garage key create gm-api-key
+docker compose exec gm-garage /garage bucket allow --read --write --owner audio --key gm-api-key
 ```
 
 Copy the printed key ID and secret into `.env`, then restart the API.
