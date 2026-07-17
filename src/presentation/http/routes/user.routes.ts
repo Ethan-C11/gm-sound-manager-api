@@ -25,7 +25,7 @@ export const userRoutes: FastifyPluginAsyncTypebox = async (app) => {
         const { email, username, password } = request.body;
 
         try {
-            const user = await EditUserUseCase.getInstance().execute(request.user.id, email, username, password);
+            const user = await EditUserUseCase.getInstance().execute(request.user.id,username, email, password);
 
 
             return reply.status(200).send({ user: { id: user.id, email: user.email, username: user.username } });
