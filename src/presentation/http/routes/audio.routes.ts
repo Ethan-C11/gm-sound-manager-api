@@ -11,7 +11,7 @@ import {authenticate} from "../hooks/authenticate.js";
 import {authorize} from "../hooks/authorize.js";
 import {Role} from "../../../shared/enums/Role.js";
 
-export async function authRoutes(app: FastifyInstance) {
+export async function audioRoutes(app: FastifyInstance) {
 
     app.post("/upload", {
         preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
