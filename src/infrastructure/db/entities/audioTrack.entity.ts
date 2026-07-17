@@ -24,8 +24,6 @@ export class AudioTrack {
     mimeType: string;
     @Column()
     sizeInBytes: number;
-    @Column({ nullable: true })
-    durationInSeconds: number;
     @Column({ type: 'enum', enum: SoundType })
     type: SoundType;
     @Column({ type: 'enum', enum: Zone, nullable: true })
