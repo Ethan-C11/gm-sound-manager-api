@@ -39,7 +39,7 @@ export class MinioStorageService {
 
     async upload(key: string, body: Buffer | Readable, size: number, contentType: string): Promise<void> {
         await this.client.putObject(this.bucket, key, body, size, {
-            "Content-Type": contentType,
+            "Content-Type":  contentType,
         });
     }
 
