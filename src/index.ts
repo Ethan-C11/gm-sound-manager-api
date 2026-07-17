@@ -8,6 +8,7 @@ import {registerDocs} from "./presentation/http/plugins/docs.plugin.js";
 import {authRoutes} from "./presentation/http/routes/auth.routes.js";
 import {sessionRoutes} from "./presentation/http/routes/session.routes.js";
 import {userRoutes} from "./presentation/http/routes/user.routes.js";
+import {audioRoutes} from "./presentation/http/routes/audio.routes.js";
 
 const fastify = Fastify({ logger: true }).withTypeProvider<TypeBoxTypeProvider>()
 await registerJwt(fastify);
@@ -16,6 +17,7 @@ await registerDocs(fastify);
 await fastify.register(authRoutes, { prefix: "/auth" });
 await fastify.register(sessionRoutes, { prefix: "/session" });
 await fastify.register(userRoutes, { prefix: "/user" });
+await fastify.register(audioRoutes, { prefix: "/audio" });
 
 const start = async () => {
     try {
