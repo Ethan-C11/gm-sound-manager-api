@@ -4,15 +4,13 @@ import {AudioTrack} from "../../../infrastructure/db/entities/audioTrack.entity.
 import {SoundType} from "../../../shared/enums/SoundType.js";
 import {Zone} from "../../../shared/enums/Zone.js";
 import {Ambiance} from "../../../shared/enums/Ambiance.js";
-import {MinioStorageService} from "../../../infrastructure/storage/MinioStorageService.js";
-import {MultipartFile} from "@fastify/multipart";
 import {AudioTrackResponse} from "../../dtos/soundTrack.schema.js";
 import {User} from "../../../infrastructure/db/entities/user.entity.js";
 import {Session} from "../../../infrastructure/db/entities/session.entity.js";
 
-class ImportAudioUseCase {
+class ResolveTracksUseCase {
 
-    private static _instance: ImportAudioUseCase;
+    private static _instance: ResolveTracksUseCase;
 
     private _audioTrackRepository: Repository<AudioTrack>;
     private _userRepository: Repository<User>;
@@ -24,11 +22,11 @@ class ImportAudioUseCase {
         this._sessionRepository = AppDataSource.getRepository(Session);
     }
 
-    static getInstance(): ImportAudioUseCase {
-        if (!ImportAudioUseCase._instance) {
-            ImportAudioUseCase._instance = new ImportAudioUseCase();
+    static getInstance(): ResolveTracksUseCase {
+        if (!ResolveTracksUseCase._instance) {
+            ResolveTracksUseCase._instance = new ResolveTracksUseCase();
         }
-        return ImportAudioUseCase._instance;
+        return ResolveTracksUseCase._instance;
     }
 
     async execute(userId: number, sessionId: number, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined): Promise<AudioTrackResponse> {
@@ -81,4 +79,4 @@ class ImportAudioUseCase {
     }
 }
 
-export default ImportAudioUseCase
+export default ResolveTracksUseCase
