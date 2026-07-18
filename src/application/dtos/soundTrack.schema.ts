@@ -6,7 +6,7 @@ export type AudioTrackBody = Static<typeof AudioTrackBody>;
 
 
 export const AudioTrackResponse = Type.Object({
-    soundTrack: Type.Object({
+    audioTrack: Type.Object({
         key: Type.String(),
         name: Type.String(),
         type: Type.String(),
