@@ -65,8 +65,8 @@ class ImportAudioUseCase {
 
         await this._audioTrackRepository.save(audioTrack);
 
-         const res : AudioTrackResponse = {
-             soundTrack: {
+         return {
+             audioTrack: {
                  key: key,
                  name: name,
                  type: type,
@@ -76,7 +76,6 @@ class ImportAudioUseCase {
              }
         }
 
-        return res;
     }
 }
 
