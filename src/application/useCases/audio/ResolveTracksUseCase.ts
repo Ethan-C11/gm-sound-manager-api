@@ -47,12 +47,12 @@ class ResolveTracksUseCase {
 
         let soundList : AudioTrack[];
 
-        if(type === SoundType.ZONE) {
+        if(type === SoundType.ZONE && zone !== undefined) {
             soundList = await this._audioTrackRepository.find({ where: { type: type, zone: zone } });
-        } else if (type === SoundType.AMBIANCE) {
+        } else if (type === SoundType.AMBIANCE && ambiance !== undefined) {
             soundList = await this._audioTrackRepository.find({ where: { type: type, ambiance: ambiance } });
         } else
-            throw Error("SoundType is invalid");
+            throw Error("SoundType is invalid and/or zone/ambiance has not been chosen");
 
         if(soundList.length <= 0)
             throw Error("No such sounds");
