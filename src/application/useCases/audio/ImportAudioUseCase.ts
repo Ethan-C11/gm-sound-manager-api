@@ -42,7 +42,7 @@ class ImportAudioUseCase {
         const extension = ImportAudioUseCase.getExtension(file.filename);
 
         if (!this._allowedExtensions.includes(extension))
-            throw Error("Only .mp3 and .wav are allowed" );
+            throw Error(`File type "${file.mimetype}" is not allowed`);
 
         if(!ambiance && !zone)
             throw Error("You need to select at least one zone or ambiance" );
