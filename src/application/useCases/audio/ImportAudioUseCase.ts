@@ -15,6 +15,8 @@ class ImportAudioUseCase {
 
     private _audioTrackRepository: Repository<AudioTrack>;
     private _userRepository: Repository<User>;
+    private _allowedExtensions = ['.mp3', '.wav', '.ogg', '.flac', '.m4a'];
+
 
     private constructor() {
         this._audioTrackRepository = AppDataSource.getRepository(AudioTrack);
@@ -28,11 +30,18 @@ class ImportAudioUseCase {
         return ImportAudioUseCase._instance;
     }
 
+    static getExtension(filename: string): string {
+        const lastDot = filename.lastIndexOf('.');
+        return lastDot === -1 ? '' : filename.slice(lastDot).toLowerCase();
+    }
+
     async execute(userId: number = 0, file : MultipartFile | undefined, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined, isUserImported : boolean): Promise<AudioTrackResponse> {
         if (!file)
             throw Error("No file selected" );
 
-        if(!file.filename.endsWith("mp3") || !file.filename.endsWith("wav"))
+        const extension = ImportAudioUseCase.getExtension(file.filename);
+
+        if (!this._allowedExtensions.includes(extension))
             throw Error("Only .mp3 and .wav are allowed" );
 
         if(!ambiance && !zone)
