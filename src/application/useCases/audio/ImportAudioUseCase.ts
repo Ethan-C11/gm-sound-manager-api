@@ -32,6 +32,8 @@ class ImportAudioUseCase {
         if (!file)
             throw Error("No file selected" );
 
+        if(!file.filename.endsWith("mp3") || !file.filename.endsWith("wav"))
+            throw Error("Only .mp3 and .wav are allowed" );
 
         if(!ambiance && !zone)
             throw Error("You need to select at least one zone or ambiance" );
