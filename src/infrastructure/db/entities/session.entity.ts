@@ -16,4 +16,8 @@ export class Session {
     @ManyToMany(() => User, (user) => user.joinedSessions)
     @JoinTable()
     sessionMembers: Relation<User[]>;
+    @Column()
+    alreadyPlayedAmbianceMusic : number[];
+    @Column()
+    alreadyPlayedZoneMusic : number[];
 }
