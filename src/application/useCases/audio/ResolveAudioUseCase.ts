@@ -8,9 +8,9 @@ import {AudioTrackResponse} from "../../dtos/soundTrack.schema.js";
 import {User} from "../../../infrastructure/db/entities/user.entity.js";
 import {Session} from "../../../infrastructure/db/entities/session.entity.js";
 
-class ResolveTracksUseCase {
+class ResolveAudioUseCase {
 
-    private static _instance: ResolveTracksUseCase;
+    private static _instance: ResolveAudioUseCase;
 
     private _audioTrackRepository: Repository<AudioTrack>;
     private _userRepository: Repository<User>;
@@ -22,11 +22,11 @@ class ResolveTracksUseCase {
         this._sessionRepository = AppDataSource.getRepository(Session);
     }
 
-    static getInstance(): ResolveTracksUseCase {
-        if (!ResolveTracksUseCase._instance) {
-            ResolveTracksUseCase._instance = new ResolveTracksUseCase();
+    static getInstance(): ResolveAudioUseCase {
+        if (!ResolveAudioUseCase._instance) {
+            ResolveAudioUseCase._instance = new ResolveAudioUseCase();
         }
-        return ResolveTracksUseCase._instance;
+        return ResolveAudioUseCase._instance;
     }
 
     async execute(userId: number, sessionId: number, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined): Promise<AudioTrackResponse> {
@@ -96,4 +96,4 @@ class ResolveTracksUseCase {
     }
 }
 
-export default ResolveTracksUseCase
+export default ResolveAudioUseCase
