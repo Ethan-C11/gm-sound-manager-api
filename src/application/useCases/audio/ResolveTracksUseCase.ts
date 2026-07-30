@@ -39,6 +39,7 @@ class ResolveTracksUseCase {
             relations: { owner: true, sessionMembers: true },
         });
 
+
         if (!session)
             throw Error("Session does not exist");
 
@@ -46,11 +47,15 @@ class ResolveTracksUseCase {
             throw Error("User is not the owner of the session");
 
         let soundList : AudioTrack[];
+        let alreadyPlayedSound : number[]
+
 
         if(type === SoundType.ZONE && zone !== undefined) {
             soundList = await this._audioTrackRepository.find({ where: { type: type, zone: zone } });
+            alreadyPlayedSound = [... session.alreadyPlayedZoneMusic];
         } else if (type === SoundType.AMBIANCE && ambiance !== undefined) {
-            soundList = await this._audioTrackRepository.find({ where: { type: type, ambiance: ambiance } });
+            soundList = await this._audioTrackRepository.find({ where: { type: type, ambianceMusic: ambiance } });
+            alreadyPlayedSound = [... session.alreadyPlayedAmbianceMusic];
         } else
             throw Error("SoundType is invalid and/or zone/ambiance has not been chosen");
 
@@ -60,11 +65,23 @@ class ResolveTracksUseCase {
         let randint = Math.floor(Math.random() * soundList.length-1);
         let chosenSound = soundList[randint];
 
-        while(chosenSound === undefined)
+        while(chosenSound === undefined || alreadyPlayedSound.includes(chosenSound.id))
         {
             randint = Math.floor(Math.random() * soundList.length-1);
             chosenSound = soundList[randint];
         }
+
+        alreadyPlayedSound.push(chosenSound.id)
+        if(alreadyPlayedSound.length > 5)
+            alreadyPlayedSound.shift();
+
+        if(type === SoundType.ZONE) {
+            session.alreadyPlayedZoneMusic = alreadyPlayedSound;
+        } else if(type === SoundType.AMBIANCE) {
+            session.alreadyPlayedAmbianceMusic = alreadyPlayedSound;
+        }
+
+        await this._sessionRepository.save(session)
 
         return {
             audioTrack: {
@@ -72,7 +89,7 @@ class ResolveTracksUseCase {
                 name: chosenSound.name,
                 type: chosenSound.type,
                 zone: chosenSound.zone?.toString(),
-                ambiance: chosenSound.ambiance?.toString(),
+                ambiance: chosenSound.ambianceMusic?.toString(),
                 isUserImported: chosenSound.isUserImported,
             }
         }
