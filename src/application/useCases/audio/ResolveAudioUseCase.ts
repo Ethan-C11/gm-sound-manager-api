@@ -29,7 +29,7 @@ class ResolveAudioUseCase {
         return ResolveAudioUseCase._instance;
     }
 
-    async execute(userId: number, sessionId: number, name: string, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined): Promise<AudioTrackResponse> {
+    async execute(userId: number, sessionId: number, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined): Promise<AudioTrackResponse> {
         const user: User | null = await this._userRepository.findOneBy({ id: userId });
         if (!user)
             throw Error("User does not exist");
