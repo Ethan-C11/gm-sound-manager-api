@@ -69,7 +69,7 @@ class ImportAudioUseCase {
             sizeInBytes: buffer.length,
             type: type,
             zone: zone ?? null,
-            ambiance: ambiance ?? null,
+            ambianceMusic: ambiance ?? null,
             uploadedBy: uploader,
             isUserImported: isUserImported,
         });
