@@ -3,7 +3,7 @@ import {Repository} from "typeorm";
 import {AudioTrack} from "../../../infrastructure/db/entities/audioTrack.entity.js";
 import {SoundType} from "../../../shared/enums/SoundType.js";
 import {Zone} from "../../../shared/enums/Zone.js";
-import {AudioTrackResponse} from "../../dtos/soundTrack.schema.js";
+import {AudioTrackResponse, PaginatedAudioTrackResponse} from "../../dtos/soundTrack.schema.js";
 import {User} from "../../../infrastructure/db/entities/user.entity.js";
 import {Ambiance} from "../../../shared/enums/Ambiance.js";
 import { IsNull } from 'typeorm';
@@ -26,7 +26,7 @@ class FetchSoundsUseCase {
         return FetchSoundsUseCase._instance;
     }
 
-    async execute(userId: number = 0, type: SoundType,zone: Zone | undefined, ambiance: Ambiance | undefined, isUserImported: boolean | undefined, offset: number = 0, limit: number = 20): Promise<{ data: AudioTrackResponse[], total: number }> {
+    async execute(userId: number = 0, type: SoundType,zone: Zone | undefined, ambiance: Ambiance | undefined, isUserImported: boolean | undefined, offset: number = 0, limit: number = 20): Promise<PaginatedAudioTrackResponse> {
         if (type !== SoundType.ZONE && type !== SoundType.AMBIANCE) {
             throw Error("SoundType is invalid and/or zone/ambiance has not been chosen");
         }
@@ -77,7 +77,7 @@ class FetchSoundsUseCase {
         return {
             data: responseList,
             total: totalCount
-        };
+        } as PaginatedAudioTrackResponse;
 
     }
 }

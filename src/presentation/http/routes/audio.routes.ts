@@ -9,12 +9,13 @@ import ImportAudioUseCase from "../../../application/useCases/audio/ImportAudioU
 import {
     ImportAudioTrackBody,
     AudioTrackResponse,
-    ResolveAudioTrackBody
+    ResolveAudioTrackBody, ListAudioTracksBody, PaginatedAudioTrackResponse
 } from "../../../application/dtos/soundTrack.schema.js";
 import {authenticate} from "../hooks/authenticate.js";
 import {authorize} from "../hooks/authorize.js";
 import {Role} from "../../../shared/enums/Role.js";
 import ResolveAudioUseCase from "../../../application/useCases/audio/ResolveAudioUseCase.js";
+import FetchSoundsUseCase from "../../../application/useCases/audio/FetchSoundsUseCase.js";
 
 export async function audioRoutes(app: FastifyInstance) {
 
@@ -76,4 +77,45 @@ export async function audioRoutes(app: FastifyInstance) {
             return reply.status(400).send({ error: (err as Error).message });
         }
     });
+
+    app.post("/list", {
+        preHandler: [authenticate, authorize(Role.USER, Role.ADMIN)],
+        schema: {
+            tags: ["Soundtrack"],
+            summary: "Get a paginated list of audio tracks based on filters",
+            body: ListAudioTracksBody,
+            response: {
+                200: PaginatedAudioTrackResponse,
+                400: ErrorResponse,
+            },
+        },
+    }, async (request, reply) => {
+        const body = request.body as any;
+
+        const type = (body.type?.value ?? body.type) as SoundType;
+        const zone = (body.zone?.value ?? body.zone) as Zone | undefined;
+        const ambiance = (body.ambiance?.value ?? body.ambiance) as Ambiance | undefined;
+        const isUserImported = body.isUserImported as boolean | undefined;
+
+        const offset = (body.offset ?? 0) as number;
+        const limit = (body.limit ?? 20) as number;
+
+        try {
+            const result = await FetchSoundsUseCase.getInstance().execute(
+                request.user.id,
+                type,
+                zone,
+                ambiance,
+                isUserImported,
+                offset,
+                limit
+            );
+
+            return reply.status(200).send(result);
+        } catch (err) {
+            return reply.status(400).send({ error: (err as Error).message });
+        }
+    });
+
+
 }
