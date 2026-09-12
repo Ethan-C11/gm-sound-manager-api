@@ -3,7 +3,8 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 FROM base AS deps
-RUN npm ci
+# Remplacement ici
+RUN npm install
 
 FROM deps AS dev
 COPY . .
@@ -16,7 +17,8 @@ RUN npm run build
 
 FROM base AS prod
 ENV NODE_ENV=production
-RUN npm ci --omit=dev
+# Remplacement ici aussi
+RUN npm install --omit=dev
 COPY --from=build /app/dist ./dist
 EXPOSE 3000
 CMD ["node", "dist/index.js"]

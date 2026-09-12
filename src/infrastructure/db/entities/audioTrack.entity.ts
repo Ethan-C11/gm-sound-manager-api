@@ -24,14 +24,12 @@ export class AudioTrack {
     mimeType: string;
     @Column()
     sizeInBytes: number;
-    @Column({ nullable: true })
-    durationInSeconds: number;
     @Column({ type: 'enum', enum: SoundType })
     type: SoundType;
     @Column({ type: 'enum', enum: Zone, nullable: true })
     zone: Zone | null;
     @Column({ type: 'enum', enum: Ambiance, nullable: true })
-    ambiance: Ambiance | null;
+    ambianceMusic: Ambiance | null;
     @ManyToOne(() => User, (user) => user.importedSounds, { nullable: true })
     @JoinColumn()
     uploadedBy: Relation<User> | null;
