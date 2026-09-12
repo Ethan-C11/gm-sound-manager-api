@@ -29,69 +29,69 @@ class ResolveAudioUseCase {
         return ResolveAudioUseCase._instance;
     }
 
-    async execute(userId: number, sessionId: number, type: SoundType, zone: Zone | undefined, ambiance : Ambiance | undefined): Promise<AudioTrackResponse> {
+    async execute(userId: number, sessionId: number, type: SoundType, zone: Zone | undefined, ambiance: Ambiance | undefined): Promise<AudioTrackResponse> {
         const user: User | null = await this._userRepository.findOneBy({ id: userId });
-        if (!user)
-            throw Error("User does not exist");
+        if (!user) throw Error("User does not exist");
 
         const session: Session | null = await this._sessionRepository.findOne({
             where: { id: sessionId },
             relations: { owner: true, sessionMembers: true },
         });
 
+        if (!session) throw Error("Session does not exist");
+        if (session.owner.id !== user.id) throw Error("User is not the owner of the session");
 
-        if (!session)
-            throw Error("Session does not exist");
+        let soundList: AudioTrack[];
+        let alreadyPlayedSound: number[];
 
-        if (session.owner.id !== user.id)
-            throw Error("User is not the owner of the session");
-
-        let soundList : AudioTrack[];
-        let alreadyPlayedSound : number[]
-
-
-        if(type === SoundType.ZONE && zone !== undefined) {
+        if (type === SoundType.ZONE && zone !== undefined) {
             soundList = await this._audioTrackRepository.find({ where: { type: type, zone: zone } });
-            alreadyPlayedSound = [... session.alreadyPlayedZoneMusic];
+            alreadyPlayedSound = [...session.alreadyPlayedZoneMusic];
         } else if (type === SoundType.AMBIANCE && ambiance !== undefined) {
             soundList = await this._audioTrackRepository.find({ where: { type: type, ambianceMusic: ambiance } });
-            alreadyPlayedSound = [... session.alreadyPlayedAmbianceMusic];
-        } else
+            alreadyPlayedSound = [...session.alreadyPlayedAmbianceMusic];
+        } else {
             throw Error("SoundType is invalid and/or zone/ambiance has not been chosen");
-
-        if(soundList.length <= 0)
-            throw Error("No such sounds");
-
-        let randint = Math.floor(Math.random() * soundList.length-1);
-        let chosenSound = soundList[randint];
-
-        while(chosenSound === undefined || alreadyPlayedSound.includes(chosenSound.id))
-        {
-            randint = Math.floor(Math.random() * soundList.length-1);
-            chosenSound = soundList[randint];
         }
 
-        alreadyPlayedSound.push(chosenSound.id)
-        if(alreadyPlayedSound.length > 5)
-            alreadyPlayedSound.shift();
+        if (soundList.length <= 0) throw Error("No such sounds");
 
-        if(type === SoundType.ZONE) {
+        let availableSounds = soundList.filter(sound => !alreadyPlayedSound.includes(sound.id));
+
+        if (availableSounds.length === 0) {
+            availableSounds = soundList;
+            alreadyPlayedSound = [];
+        }
+
+        const randint = Math.floor(Math.random() * availableSounds.length);
+        const chosenSound = availableSounds[randint];
+
+        if (!chosenSound)
+            throw Error("Error: No sound selected.");
+
+
+        alreadyPlayedSound.push(chosenSound.id);
+        if (alreadyPlayedSound.length > 5) {
+            alreadyPlayedSound.shift();
+        }
+
+        if (type === SoundType.ZONE) {
             session.alreadyPlayedZoneMusic = alreadyPlayedSound;
-        } else if(type === SoundType.AMBIANCE) {
+        } else if (type === SoundType.AMBIANCE) {
             session.alreadyPlayedAmbianceMusic = alreadyPlayedSound;
         }
 
-        await this._sessionRepository.save(session)
+        await this._sessionRepository.save(session);
 
         return {
-                key: chosenSound.storageKey,
-                name: chosenSound.name,
-                type: chosenSound.type,
-                zone: chosenSound.zone?.toString(),
-                ambiance: chosenSound.ambianceMusic?.toString(),
-                isUserImported: chosenSound.isUserImported,
-        }
+            key: chosenSound.storageKey,
+            name: chosenSound.name,
+            type: chosenSound.type,
+            zone: chosenSound.zone?.toString(),
+            ambiance: chosenSound.ambianceMusic?.toString(),
+            isUserImported: chosenSound.isUserImported,
+        };
     }
 }
 
-export default ResolveAudioUseCase
+export default ResolveAudioUseCase;
