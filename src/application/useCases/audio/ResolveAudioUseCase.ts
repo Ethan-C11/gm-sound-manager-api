@@ -84,14 +84,12 @@ class ResolveAudioUseCase {
         await this._sessionRepository.save(session)
 
         return {
-            audioTrack: {
                 key: chosenSound.storageKey,
                 name: chosenSound.name,
                 type: chosenSound.type,
                 zone: chosenSound.zone?.toString(),
                 ambiance: chosenSound.ambianceMusic?.toString(),
                 isUserImported: chosenSound.isUserImported,
-            }
         }
     }
 }
