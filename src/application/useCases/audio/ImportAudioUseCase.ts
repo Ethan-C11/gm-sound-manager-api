@@ -77,14 +77,12 @@ class ImportAudioUseCase {
         await this._audioTrackRepository.save(audioTrack);
 
          return {
-             audioTrack: {
                  key: key,
                  name: name,
                  type: type,
                  zone: zone,
                  ambiance: ambiance,
                  isUserImported: isUserImported,
-             }
         }
 
     }
